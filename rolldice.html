@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        img{
+            display: inline-block;
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+        }
+    </style>
+</head>
+<body>
+    <form>
+        <p>
+            How many Rolls: <input type='number' id='throws' required min='1'>
+        </p>
+        <p>
+            Pick Number:
+            <select>
+                <option value='1'>1</option>
+                <option value='2'>2</option>
+                <option value='3'>3</option>
+                <option value='4'>4</option>
+                <option value='5'>5</option>
+                <option value='6'>6</option>
+            </select>
+        </p>
+
+        <p>
+            Predict Minimum total Rolls Of Number: <input type='number' id='predicted' required min='0'>
+        </p>
+
+        <button>Play</button>
+    </form>
+    <div id='count'></div>
+    <div class="res"></div>
+    <script>
+        let form = document.querySelector("form")
+        form.onsubmit = playGame
+        function playGame(e){
+            e.preventDefault()
+            const throws = Number(document.querySelector("#throws").value)
+            const predicted = Number(document.querySelector("select").value)
+            const predictedMin = Number(document.querySelector("#predicted").value)
+            RollDice(throws, predicted, predictedMin)
+        }
+
+        function RollDice(throws, predicted, predictedMin){
+            let actualExpected = 0
+            let res = document.querySelector(".res")
+            res.innerHTML = ''
+            function roll(){
+                let compRoll = Math.floor(Math.random() * 6) + 1
+                if(compRoll == predicted){
+                    actualExpected += 1
+                }
+                const img = document.createElement("img")
+                img.src = `${compRoll}.png`
+                let count = document.querySelector("#count")
+                count.innerHTML = actualExpected
+                res.append(img)
+
+            }
+            x = setInterval(roll, 1000)
+
+            setTimeout(clear, throws * 1000)
+
+            function clear(){
+                clearInterval(x)
+                if(predictedMin <= actualExpected){
+                    alert("You won. Hurray")
+                }
+                else{
+                    alert(`Sorry, you are ${predictedMin - actualExpected} away from winning`)
+                }
+            }
+        }
+    </script>
+</body>
+</html>
